@@ -15,9 +15,14 @@ jobs:
       - name: Kill locking processes
         shell: cmd # Forcer l'utilisation de CMD
         run: |
-          taskkill /F /IM node.exe /T 2>nul || echo.
-          taskkill /F /IM git.exe /T 2>nul || echo.
-          timeout /t 2 /nobreak >nul
+          echo === Nettoyage des processus Node ===
+          taskkill /F /IM node.exe /T 2>nul && echo Success || echo Aucun processus node trouvé
+    
+          echo === Nettoyage des processus Git ===
+          taskkill /F /IM git.exe /T 2>nul && echo Success || echo Aucun processus git trouvé
+    
+          echo === Pause de sécurité ===
+          timeout /t 3 /nobreak >nul
       - name: Checkout code
         uses: actions/checkout@v4
         with:
