@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: node-cicd-kube
-        image: herve97/node-cicd-kube:latest
+        image: herve97/node-cicd-kube:$GITHUB_SHA
+        # image: herve97/node-cicd-kube:latest
         ports:
         - containerPort: 3000
         resources:

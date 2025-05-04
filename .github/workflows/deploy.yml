@@ -12,8 +12,17 @@ jobs:
   deploy-to-local:
     runs-on: self-hosted # Runner auto-hébergé sur votre machine
     steps:
+      - name: Kill locking processes
+        run: |
+          # Liste des processus connus pour bloquer des fichiers
+          taskkill /F /IM node.exe /T || echo "Aucun processus node trouvé"
+          taskkill /F /IM git.exe /T || echo "Aucun processus git trouvé"
+          timeout /t 2 /nobreak >nul
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+            clean: false
+            fetch-depth: 0
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
