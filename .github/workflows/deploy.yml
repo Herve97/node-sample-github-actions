@@ -11,6 +11,7 @@ env:
 jobs:
   deploy-to-local:
     runs-on: self-hosted # Runner auto-hébergé sur votre machine
+    timeout-minutes: 30 # Augmenter le timeout global
     steps:
       - name: Kill processes with Handle
         shell: powershell
@@ -43,8 +44,15 @@ jobs:
              !node_modules/
             persist-credentials: false
 
+      - name: Cache Docker Login Action
+        uses: actions/cache@v3
+        with:
+          path: ./_actions_cache/docker-login
+          key: docker-login-v3
+
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: docker/login-action@v3.0.0
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
