@@ -13,11 +13,18 @@ jobs:
     runs-on: self-hosted # Runner auto-hébergé sur votre machine
     steps:
       - name: Kill locking processes
+        shell: cmd # Forcer l'utilisation de CMD
         run: |
-          # Liste des processus connus pour bloquer des fichiers
-          taskkill /F /IM node.exe /T || echo "Aucun processus node trouvé"
-          taskkill /F /IM git.exe /T || echo "Aucun processus git trouvé"
+          taskkill /F /IM node.exe /T 2>nul || echo.
+          taskkill /F /IM git.exe /T 2>nul || echo.
           timeout /t 2 /nobreak >nul
+          #taskkill /F /IM node.exe /T || echo "Ignorer erreur node"
+          #taskkill /F /IM git.exe /T || echo "Ignorer erreur git"
+          #timeout /t 2 /nobreak >nul
+          # Liste des processus connus pour bloquer des fichiers
+          #taskkill /F /IM node.exe /T || echo "Aucun processus node trouvé"
+          #taskkill /F /IM git.exe /T || echo "Aucun processus git trouvé"
+          #timeout /t 2 /nobreak >nul
       - name: Checkout code
         uses: actions/checkout@v4
         with:
