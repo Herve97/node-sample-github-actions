@@ -42,3 +42,8 @@ jobs:
           kubectl apply -f k8s/deployment.yaml
           kubectl apply -f k8s/service.yaml
           kubectl rollout restart deployment/node-app
+
+      - name: Clean workspace
+        run: |
+            git clean -ffdx
+            git reset --hard HEAD
