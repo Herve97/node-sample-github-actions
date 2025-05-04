@@ -13,16 +13,11 @@ jobs:
     runs-on: self-hosted # Runner auto-hébergé sur votre machine
     steps:
       - name: Kill locking processes
-        shell: cmd # Forcer l'utilisation de CMD
+        shell: powershell
         run: |
-          echo === Nettoyage des processus Node ===
-          taskkill /F /IM node.exe /T 2>nul && echo Success || echo Aucun processus node trouvé
-    
-          echo === Nettoyage des processus Git ===
-          taskkill /F /IM git.exe /T 2>nul && echo Success || echo Aucun processus git trouvé
-    
-          echo === Pause de sécurité ===
-          timeout /t 3 /nobreak >nul
+         Stop-Process -Name "node" -Force -ErrorAction SilentlyContinue
+         Stop-Process -Name "git" -Force -ErrorAction SilentlyContinue
+         Start-Sleep -Seconds 2
       - name: Checkout code
         uses: actions/checkout@v4
         with:
