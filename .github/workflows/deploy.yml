@@ -30,11 +30,9 @@ jobs:
       - name: Préparation Workspace
         shell: cmd
         run: |
-           :: Libération des locks résiduels
-           powercfg -h off >nul 2>&1
-           icacls "C:\actions-runner\*" /grant "Everyone:(OI)(CI)F" /T /C >nul
-           fsutil behavior set disablelastaccess 1 >nul
-           fsutil usn deletejournal /D C: >nul
+          powercfg -h off >nul 2>&1
+          icacls "C:\actions-runner\*" /grant "*S-1-1-0:(OI)(CI)F" /C >nul
+          fsutil behavior set disablelastaccess 1 >nul
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -42,7 +40,7 @@ jobs:
             fetch-depth: 0
             sparse-checkout: |
              /*
-                !node_modules/
+             !node_modules/
             persist-credentials: false
 
       - name: Login to DockerHub
