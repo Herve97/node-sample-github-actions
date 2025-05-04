@@ -12,15 +12,20 @@ jobs:
   deploy-to-local:
     runs-on: self-hosted # Runner auto-hébergé sur votre machine
     steps:
-      - name: Kill locking processes
+      - name: Kill processes with Handle
         shell: powershell
         run: |
-         handle64.exe -accepteula -nobanner "$env:RUNNER_WORKSPACE" | ForEach-Object {
-         $parts = $_ -split '\s+'
-         Stop-Process -Id $parts[4] -Force -ErrorAction SilentlyContinue
-         }
-         Remove-Item -Path "$env:RUNNER_TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-         Remove-Item -Path "$env:GITHUB_WORKSPACE" -Recurse -Force -ErrorAction SilentlyContinue
+          # Vérifier l'installation
+          if (-not (Test-Path "C:\Sysinternals\handle64.exe")) {
+              throw "Handle64 non installé"
+          }
+          
+          # Appel avec chemin absolu
+          & "C:\Sysinternals\handle64.exe" -accepteula -nobanner "$env:GITHUB_WORKSPACE" | ForEach-Object {
+              if ($_ -match 'pid:(\d+)') {
+                  Stop-Process -Id $matches[1] -Force -ErrorAction SilentlyContinue
+              }
+          }
      
       - name: Préparation Workspace
         shell: cmd
